@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {question} from 'readline-sync';
 import log4js from 'log4js';
 import {getBusStopInfo, getDepartureInfo, getStopPointsByLocation} from "./api_clients/tflApiClient.js";
@@ -19,32 +18,6 @@ logger.info("Asking user for postcode");
 const postcode = question('Please type a postcode.\n').trim();
 getNearestBusStops(postcode) //NW51TL
 
-/*
- function getDepartureInfo (stopCode)  {
-    logger.info("Getting departure information from stopCode: " + stopCode);
-    return axios.get('https://api.tfl.gov.uk/StopPoint/' + stopCode + '/Arrivals')
-        .then((response) => {
-            let busInfo = response.data;
-            console.log("Station name: " + busInfo[0].stationName +'\n');
-            if (busInfo.length > 0) { // buses are arriving
-                busInfo = busInfo.sort((a, b) => a.timeToStation - b.timeToStation);
-                for (let i = 0; i < Math.min(5, busInfo.length); i++) {
-
-                    console.log("Line Name: " + busInfo[i].lineName);
-                    console.log("Destination Name: " + busInfo[i].destinationName);
-                    console.log("Towards: " + busInfo[i].towards);
-                    console.log("Time to station: " + Math.round(busInfo[i].timeToStation / 60) + " minutes");
-                    console.log();
-                }
-            }
-        })
-        .catch((error) => {
-            console.log("Error in finding bus stop: " + error.response.data.message);
-        })
-}
-*/
-
-
 async function getNearestBusStops (postcode) {
     let lat,lon;
     try {
@@ -54,8 +27,9 @@ async function getNearestBusStops (postcode) {
         let nearestBusStops = await getStopPointsByLocation(lat, lon, stopTypes, radius);
 
         for (let i = 0; i < Math.min(2, nearestBusStops.length); i++) {
-            let response = getDepartureInfo(await getBusStopInfo(nearestBusStops[i].id));
-            console.log(response);
+
+            getDepartureInfo(getBusStopInfo(nearestBusStops[i].id))
+                .then((busList) => console.log(busList));
         }
     } catch (e) {
 
