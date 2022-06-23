@@ -17,10 +17,7 @@ export function getBusStopInfo (stopCode)  {
 }
 
 export function getDepartureInfo (busStopPromise) {
-
-        // let busStopInfo = busStopPromise.then((response) => response.data);
-        const busStop = new BusStop(busStopPromise.data);
-        return busStop.getNIncomingBuses(5);
-
+    const busStop = new BusStop(busStopPromise.data);
+    return busStop.getNIncomingBuses(5);
 }
 

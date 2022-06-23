@@ -29,8 +29,9 @@ async function getNearestBusStops (postcode) {
         let nearestBusStops = await getStopPointsByLocation(lat, lon, stopTypes, radius);
 
         for (let i = 0; i < Math.min(2, nearestBusStops.length); i++) {
-            let response = getDepartureInfo(await getBusStopInfo(nearestBusStops[i].id));
-            console.log(response);
+            await getBusStopInfo(nearestBusStops[i].id)
+                .then(getDepartureInfo)
+                .then((response) => console.log(response))
         }
     } catch (e) {
 
