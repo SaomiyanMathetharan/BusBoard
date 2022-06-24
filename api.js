@@ -16,12 +16,14 @@ export async function getDeparturesForNNearestBusStops (postcode, numberOfBusSto
 }
 
 async function getDeparturesForNBusStops (max, nearestBusStops){
+    if (nearestBusStops.length < 1) {
+        return(Promise.reject("No bus stops found"))
+    }
     let busStops = {}
     for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
         await getBusStopInfo(nearestBusStops[i].id)
             .then(getDepartureInfo)
             .then((response) => busStops[nearestBusStops[i].commonName]=response)
     }
-    console.log(busStops)
-    return busStops
+    return busStops;
 }

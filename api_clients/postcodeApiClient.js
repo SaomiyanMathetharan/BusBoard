@@ -8,8 +8,7 @@ export function getPostcodeLocation (postcode) {
     return axios.get('http://api.postcodes.io/postcodes/' + postcode)
         .then((response) => [response.data.result.latitude, response.data.result.longitude])
         .catch((error) => {
-            logger.warn("Error retrieving postcode: " + error);
-            console.log("Error retrieving postcode: " + postcode);
-            return Promise.reject(error);
+            logger.warn("Error retrieving postcode: " + error.response.data.error);
+            return Promise.reject(error.response.data.error);
         })
 }
