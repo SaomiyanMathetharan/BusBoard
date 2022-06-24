@@ -25,8 +25,6 @@ async function getDeparturesForNBusStops (max, nearestBusStops){
         let busStopName = nearestBusStops[i].commonName;
         await getBusStopInfo(nearestBusStops[i].id)
             .then((busStopInfo) => getDepartureInfo(busStopInfo, busStopName))
-            // .then((departureInfo) => busStops[busStopName] = departureInfo)
-            // .then((departureInfo) => busStops[nearestBusStops[i].id] = [busStopName, departureInfo])
             .then((departureInfo) => busStops[nearestBusStops[i].id] = {
                 "busStopName": busStopName,
                 "departureInfo": departureInfo

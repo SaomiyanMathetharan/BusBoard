@@ -17,4 +17,6 @@ router.get('/departureBoards/:postcode', async (req, res) => {
     res.send(busStops);
 })
 
+router.use('/history', express.static('frontend/history.html'));
+
 export default router;
