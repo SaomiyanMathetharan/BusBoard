@@ -3,10 +3,10 @@ import log4js from "log4js";
 import BusStop from "../models/BusStop.js"
 const logger = log4js.getLogger('TFL API Client');
 
-export function getStopPointsByLocation(lat, lon, stopTypes, radius) {
+export function getStopPointsByLocation(lat, lon, radius = 500) {
     logger.info("Retrieving stop points by location");
     return axios.get('https://api.tfl.gov.uk/StopPoint/?lat=' + lat + '&lon=' + lon +
-        '&stopTypes=' + stopTypes + '&radius=' + radius).then((response) => response.data.stopPoints).catch((error) => {
+        '&stopTypes=NaptanPublicBusCoachTram&radius=' + radius).then((response) => response.data.stopPoints).catch((error) => {
         logger.warn("Error in finding bus stops");
         console.log("Error in finding bus stops: " + error.response.data.message);
         return error;

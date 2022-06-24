@@ -5,24 +5,14 @@ import log4js from "log4js";
 const logger = log4js.getLogger('API');
 
 export async function getDeparturesForNNearestBusStops (postcode, numberOfBusStops) {
-    let lat,lon;
-    try {
-        try { //TODO tidy this try/catch up?
-            [lat,lon] = await getPostcodeLocation(postcode);
-        } catch (error) {
-            logger.warn("Invalid postcode received")
-            return(error)
-        }
-        logger.info("Postcode longitude and latitude retrieved");
-        const stopTypes = "NaptanPublicBusCoachTram";
-        const radius = 500;
 
-        let nearestBusStops = await getStopPointsByLocation(lat, lon, stopTypes, radius);
-        //todo - check length of nearestBusStops - if empty return 404/other error
-        return await getDeparturesForNBusStops(numberOfBusStops, nearestBusStops)
-    } catch (error) {
-        return error;
-    }
+    return getPostcodeLocation(postcode).then((location) => getStopPointsByLocation(location[0], location[1]))
+        .then((nearestBusStops) => getDeparturesForNBusStops(numberOfBusStops, nearestBusStops))
+        .catch((error) => {
+            return(Promise.reject(error))
+        });
+
+
 }
 
 async function getDeparturesForNBusStops (max, nearestBusStops){
