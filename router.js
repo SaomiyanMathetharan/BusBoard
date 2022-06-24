@@ -18,6 +18,3 @@ router.get('/departureBoards/:postcode', async (req, res) => {
 })
 
 export default router;
-
-// http://localhost:3000/departureBoards/abc
-// https://www.google.com/search?q=abc

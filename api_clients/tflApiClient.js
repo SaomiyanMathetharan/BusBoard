@@ -22,9 +22,9 @@ export function getBusStopInfo (stopCode)  {
     })
 }
 
-export function getDepartureInfo (busStopData) {
+export function getDepartureInfo (busStopData, busStopName) {
     logger.info("Retrieving departure information for bus stops");
-    const busStop = new BusStop(busStopData.data);
+    const busStop = new BusStop(busStopData.data, busStopName);
     return busStop.getNIncomingBuses(5);
 }
 

@@ -17,13 +17,23 @@ export async function getDeparturesForNNearestBusStops (postcode, numberOfBusSto
 
 async function getDeparturesForNBusStops (max, nearestBusStops){
     if (nearestBusStops.length < 1) {
-        return(Promise.reject("No bus stops found"))
+        logger.warn("Error in finding bus stops - no bus stops found within radius");
+        return(Promise.reject("No bus stops found within radius"))
     }
     let busStops = {}
     for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
+        let busStopName = nearestBusStops[i].commonName;
         await getBusStopInfo(nearestBusStops[i].id)
-            .then(getDepartureInfo)
-            .then((response) => busStops[nearestBusStops[i].commonName]=response)
+            .then((busStopInfo) => getDepartureInfo(busStopInfo, busStopName))
+            // .then((departureInfo) => busStops[busStopName] = departureInfo)
+            // .then((departureInfo) => busStops[nearestBusStops[i].id] = [busStopName, departureInfo])
+            .then((departureInfo) => busStops[nearestBusStops[i].id] = {
+                "busStopName": busStopName,
+                "departureInfo": departureInfo
+            })
+            .catch((error) => {
+                return(Promise.reject(error))
+            });
     }
     return busStops;
 }

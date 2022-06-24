@@ -20,6 +20,8 @@ app.listen(port, () => {
     console.log(`App listening on port ${port}`)
 })
 
+app.use(express.static('frontend'));
+
 app.use(router)
 
 
