@@ -4,9 +4,10 @@ import {getNearestBusStops} from "./api.js"
 const router = express.Router();
 
 
-router.get('/departureBoards/:postcode', (req, res) => {
+router.get('/departureBoards/:postcode', async (req, res) => {
     let postcode = req.params.postcode;
-    res.send(getNearestBusStops(postcode));
+    let busStops = await getNearestBusStops(postcode)
+    res.send(busStops);
 })
 
 export default router;

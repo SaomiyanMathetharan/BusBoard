@@ -9,12 +9,20 @@ export async function getNearestBusStops (postcode) {
         const radius = 500;
         let nearestBusStops = await getStopPointsByLocation(lat, lon, stopTypes, radius);
 
-        for (let i = 0; i < Math.min(2, nearestBusStops.length); i++) {
-            await getBusStopInfo(nearestBusStops[i].id)
-                .then(getDepartureInfo)
-                .then((response) => console.log(response))
-        }
+        return await getDepartureInfoForNBusStops(2, nearestBusStops)
     } catch (e) {
 
     }
 }
+
+async function getDepartureInfoForNBusStops (max, nearestBusStops){
+    let busStops = {}
+    for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
+        await getBusStopInfo(nearestBusStops[i].id)
+            .then(getDepartureInfo)
+            .then((response) => busStops[i]=response)
+    }
+    console.log(busStops)
+    return busStops
+}
+// busStops[key] = value
