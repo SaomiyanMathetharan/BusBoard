@@ -2,6 +2,16 @@ import {question} from 'readline-sync';
 import log4js from 'log4js';
 import {getBusStopInfo, getDepartureInfo, getStopPointsByLocation} from "./api_clients/tflApiClient.js";
 import {getPostcodeLocation} from "./api_clients/postcodeApiClient.js";
+import express from 'express'
+import router from './router.js'
+const app = express()
+const port = 3000
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
+
+app.use(router)
 
 log4js.configure({
     appenders: {

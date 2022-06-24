@@ -13,7 +13,6 @@ export function getBusStopInfo (stopCode)  {
     return axios.get('https://api.tfl.gov.uk/StopPoint/' + stopCode + '/Arrivals').catch((error) => {
         console.log("Error in finding bus stop: " + error.response.data.message);
     })
-
 }
 
 export function getDepartureInfo (busStopPromise) {
