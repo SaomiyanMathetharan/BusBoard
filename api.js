@@ -20,18 +20,48 @@ async function getDeparturesForNBusStops (max, nearestBusStops){
         logger.warn("Error in finding bus stops - no bus stops found within radius");
         return(Promise.reject("No bus stops found within radius"))
     }
-    let busStops = {}
-    for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
-        let busStopName = nearestBusStops[i].commonName;
-        await getBusStopInfo(nearestBusStops[i].id)
-            .then((busStopInfo) => getDepartureInfo(busStopInfo, busStopName))
-            .then((departureInfo) => busStops[nearestBusStops[i].id] = {
-                "busStopName": busStopName,
-                "departureInfo": departureInfo
-            })
-            .catch((error) => {
-                return(Promise.reject(error))
-            });
-    }
-    return busStops;
+    // let busStops = nearestBusStops.map((busStop, index) => temporaryName(busStop, index))
+    let busStopList = nearestBusStops.map(temporaryName)
+    Promise.all(busStopList).then((data) => console.log(data))
+    // return Promise.all(busStopList);
+    // for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
+    //     let busStopName = nearestBusStops[i].commonName;
+    //     await getBusStopInfo(nearestBusStops[i].id)
+    //         .then((busStopInfo) => getDepartureInfo(busStopInfo, busStopName))
+    //         .then((departureInfo) => busStops[nearestBusStops[i].id] = {
+    //             "busStopName": busStopName,
+    //             "departureInfo": departureInfo
+    //         })
+    //         .catch((error) => {
+    //             return(Promise.reject(error))
+    //         });
+    // }
+    // return busStops;
 }
+
+function temporaryName (busStop){
+    let busStops = {}
+    getBusStopInfo(busStop.id)
+        .then((busStopInfo) => getDepartureInfo(busStopInfo, "busStopName"))
+        .then((departureInfo) => busStops[busStop.id] = {
+            "busStopName": "busStopName",
+            "departureInfo": departureInfo
+        }).then(() => {
+        return busStops
+    })
+        .catch((error) => {
+            return(Promise.reject(error))
+        });
+    //return
+}
+
+//var requests = nearestBusStops.map(this.getArrivalsForBusStop);
+// Promise.all(requests).then(...)
+// return Promise.all(requests);
+
+/*
+function beeee(max, nearestBusStops) {
+
+}
+
+ */
