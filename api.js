@@ -1,28 +1,37 @@
 import {getPostcodeLocation} from "./api_clients/postcodeApiClient.js";
 import {getBusStopInfo, getDepartureInfo, getStopPointsByLocation} from "./api_clients/tflApiClient.js";
+import log4js from "log4js";
 
-export async function getNearestBusStops (postcode) {
+const logger = log4js.getLogger('API');
+
+export async function getDeparturesForNNearestBusStops (postcode, numberOfBusStops) {
     let lat,lon;
     try {
-        [lat,lon] = await getPostcodeLocation(postcode); //
+        try { //TODO tidy this try/catch up?
+            [lat,lon] = await getPostcodeLocation(postcode);
+        } catch (error) {
+            logger.warn("Invalid postcode received")
+            return(error)
+        }
+        logger.info("Postcode longitude and latitude retrieved");
         const stopTypes = "NaptanPublicBusCoachTram";
         const radius = 500;
+
         let nearestBusStops = await getStopPointsByLocation(lat, lon, stopTypes, radius);
-
-        return await getDepartureInfoForNBusStops(2, nearestBusStops)
-    } catch (e) {
-
+        //todo - check length of nearestBusStops - if empty return 404/other error
+        return await getDeparturesForNBusStops(numberOfBusStops, nearestBusStops)
+    } catch (error) {
+        return error;
     }
 }
 
-async function getDepartureInfoForNBusStops (max, nearestBusStops){
+async function getDeparturesForNBusStops (max, nearestBusStops){
     let busStops = {}
     for (let i = 0; i < Math.min(max, nearestBusStops.length); i++) {
         await getBusStopInfo(nearestBusStops[i].id)
             .then(getDepartureInfo)
-            .then((response) => busStops[i]=response)
+            .then((response) => busStops[nearestBusStops[i].commonName]=response)
     }
     console.log(busStops)
     return busStops
 }
-// busStops[key] = value

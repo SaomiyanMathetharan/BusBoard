@@ -1,7 +1,19 @@
+import Bus from "./Bus.js"
+import log4js from "log4js";
+
+const logger = log4js.getLogger('Bus Stop Model');
+
 export default class BusStop {
+
     constructor(busStopInfo) {
+        logger.trace("Creating BusStop using busStopInfo: " + busStopInfo);
         this.stationName = busStopInfo[0].stationName;
-        this.incomingBuses = busStopInfo;
+        logger.trace("Converting TFL bus objects into server bus objects.");
+        this.incomingBuses = [];
+        for (let i = 0; i < busStopInfo.length; i++) {
+            this.incomingBuses.push(new Bus(busStopInfo[i]))
+        }
+        logger.trace("Sorting incoming buses by time to station");
         this.sortIncomingBusesByTimeToStation();
     }
 
@@ -10,7 +22,7 @@ export default class BusStop {
     }
 
     getNIncomingBuses(number) {
-        let buses = []
+        let buses = [];
         for (let i = 0; i < Math.min(number, this.incomingBuses.length); i++) {
             buses.push(this.incomingBuses[i]);
         }
